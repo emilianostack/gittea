@@ -1,0 +1,69 @@
+version: "3"
+
+networks:
+  gitea:
+    external: false
+
+services:
+  server:
+    image: docker.gitea.com/gitea:1.25.5
+    container_name: gitea
+    restart: always
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+
+      # Banco
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=gitea
+
+      # Actions
+      - GITEA__actions__ENABLED=true
+
+      # URL externa para navegador
+      - GITEA__server__ROOT_URL=http://172.18.0.3:3000/
+      - GITEA__server__DOMAIN=172.18.0.3
+    networks:
+      - gitea
+    volumes:
+      - ./gitea:/data
+    ports:
+      - "3000:3000"
+      - "222:22"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea
+      - POSTGRES_DB=gitea
+    networks:
+      - gitea
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+
+  runner:
+    image: gitea/act_runner:latest
+    container_name: gitea-runner
+    user: root
+    restart: always
+    depends_on:
+      - server
+    networks:
+      - gitea
+    extra_hosts:
+      - "server:172.18.0.3"
+    volumes:
+      - ./runner:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - GITEA_RUNNER_REGISTRATION_TOKEN=CDhUyRNMqSQyZugtW7bI9i4LOAaWN96K65fCpL7c
+
+    command: >
+      sh -c 'if [ ! -f /data/.runner ]; then act_runner register --no-interactive --instance http://172.18.0.3:3000 --token $$GITEA_RUNNER_TOKEN --name runner-local-1; fi; act_runner daemon --config /data/config.yaml'
