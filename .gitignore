@@ -1,0 +1,23 @@
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# macOS / editor cruft
+.DS_Store
+.vscode/
+
+# Docker runtime leftovers
+*.log
+
+# Gitea persistent data (contains repos, attachments, sessions, keys)
+gitea/git/
+gitea/gitea/
+gitea/ssh/
+
+# PostgreSQL data directory (database files)
+postgres/
+
+# Act runner runtime state
+runner/.runner
+runner/data/
