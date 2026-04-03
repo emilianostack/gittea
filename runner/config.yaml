@@ -1,5 +1,5 @@
 container:
-  network: gitea-docker_gitea
+  network: gittea_gitea
   privileged: true
   options: >-
     --add-host=server:host-gateway

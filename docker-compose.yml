@@ -24,8 +24,8 @@ services:
       - GITEA__actions__ENABLED=true
 
       # URL externa para navegador
-      - GITEA__server__ROOT_URL=http://172.18.0.3:3000/
-      - GITEA__server__DOMAIN=172.18.0.3
+      - GITEA__server__ROOT_URL=http://localhost:3000/
+      - GITEA__server__DOMAIN=localhost
     networks:
       - gitea
     volumes:
@@ -57,13 +57,11 @@ services:
       - server
     networks:
       - gitea
-    extra_hosts:
-      - "server:172.18.0.3"
     volumes:
       - ./runner:/data
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - GITEA_RUNNER_REGISTRATION_TOKEN=CDhUyRNMqSQyZugtW7bI9i4LOAaWN96K65fCpL7c
-
-    command: >
-      sh -c 'if [ ! -f /data/.runner ]; then act_runner register --no-interactive --instance http://172.18.0.3:3000 --token $$GITEA_RUNNER_TOKEN --name runner-local-1; fi; act_runner daemon --config /data/config.yaml'
+      - CONFIG_FILE=/data/config.yaml
+      - GITEA_INSTANCE_URL=http://gitea:3000
+      - GITEA_RUNNER_NAME=runner-local-1
+      - GITEA_RUNNER_REGISTRATION_TOKEN=SDOEhh0u8uxNncVFn3c2LUUuigq14GBx5ZbgGfdi
