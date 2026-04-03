@@ -1,6 +1,8 @@
 Rode: docker.io/gitea/act_runner:latest
 
+```bash
 docker-compose up -d
+```
 
 Crie o projeto projeto-teste no Gitea
 
@@ -17,6 +19,8 @@ Acessar o gitea ir no repositorio
 - docker-compose restart
 
 no terminal:
+
+```bash
 npx create-next-app@latest projeto-teste --yes
 cd projeto-teste
 code .
@@ -24,6 +28,7 @@ git remote add origin http://localhost:3000/gittea/projeto-gitea.git
 git add .
 git commit -m "first commit"
 git push -u origin main
+```
 
 crie o arquivo .github/workflows/ci.yml
 
